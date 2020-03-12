@@ -1,0 +1,65 @@
+version: '3.3'
+services:
+
+  # https://codewithhugo.com/docker-compose-local-https/
+
+  taco_web: &taco_app
+    build:
+      context: .
+      dockerfile: web.Dockerfile
+    image: jterhorst/taco-rails
+    volumes:
+      - ./:/web
+    environment:
+      - VIRTUAL_HOST=taco.docker
+      - VIRTUAL_PORT=8080
+      - POSTGRES_HOST
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - NODE_ENV=development
+      - RAILS_ENV=development
+      - MASTER_KEY
+      - RAILS_MASTER_KEY
+    depends_on:
+      - taco_db
+    restart: unless-stopped
+    deploy:
+      mode: replicated
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+
+  taco_worker:
+    <<: *taco_app
+    command: "bundle exec bin/rake jobs:work"
+    environment:
+      - NODE_ENV=development
+      - RAILS_ENV=development
+      - POSTGRES_HOST
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - MASTER_KEY
+      - RAILS_MASTER_KEY
+    depends_on:
+      - taco_db
+    deploy:
+      mode: replicated
+      replicas: 5
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == manager]
+
+  proxy:
+    image: jwilder/nginx-proxy:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./nginx/certs:/etc/nginx/certs
+    depends_on:
+      - taco_web
+    restart: unless-stopped

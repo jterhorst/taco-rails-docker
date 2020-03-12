@@ -1,0 +1,235 @@
+version: '3.3'
+services:
+
+  # to incorporate the .env file use:
+  # env $(cat .env | grep ^[A-Z] | xargs) docker stack deploy --compose-file docker-compose.yml test31
+  
+  ## TACO APP SERVICES
+
+  taco_db:
+    image: postgres:9.6
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+
+
+  # taco_web:
+  #   image: crccheck/hello-world
+  #   ports:
+  #     - 8081:8000
+  #   networks:
+  #     - net
+  #     - default
+  #   environment:
+  #     - VIRTUAL_HOST=supertaco.dev
+  #     - VIRTUAL_PORT=8000
+  #     - LETSENCRYPT_HOST=supertaco.dev
+
+
+  taco_web:
+    build:
+      context: .
+      dockerfile: web.Dockerfile
+    image: jterhorst/taco-rails
+    volumes:
+      - ./:/web
+    environment:
+      - VIRTUAL_HOST=supertaco.dev
+      - VIRTUAL_PORT=8080
+      - LETSENCRYPT_HOST=supertaco.dev
+      - POSTGRES_HOST
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - NODE_ENV=production
+      - RAILS_ENV=production
+      - RAILS_SERVE_STATIC_FILES=true
+      - MASTER_KEY
+      - RAILS_MASTER_KEY
+    ports:
+      - 8080
+    depends_on:
+      - taco_db
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  taco_worker:
+    build:
+      context: .
+      dockerfile: web.Dockerfile
+    image: jterhorst/taco-rails
+    command: "bundle exec bin/rake jobs:work"
+    environment:
+      - NODE_ENV=production
+      - RAILS_ENV=production
+      - POSTGRES_HOST
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - MASTER_KEY
+      - RAILS_MASTER_KEY
+    depends_on:
+      - taco_db
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == manager]
+
+  visualizer:
+    image: dockersamples/visualizer
+    volumes: 
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    environment:
+      - VIRTUAL_HOST=viz.supertaco.dev
+      - VIRTUAL_PORT=8080
+      - LETSENCRYPT_HOST=viz.supertaco.dev
+    ports:
+      - 8090:8080
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+
+  ## NGINX REVERSE PROXY...
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    volumes:
+      - nginx-certs:/etc/nginx/certs
+      - nginx-vhost:/etc/nginx/vhost.d
+      - nginx-html:/usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    labels:
+      - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - taco_web
+      - app
+      - visualizer
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+
+  nginx-proxy-letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    volumes:
+      - nginx-certs:/etc/nginx/certs
+      - nginx-vhost:/etc/nginx/vhost.d
+      - nginx-html:/usr/share/nginx/html
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - DEFAULT_EMAIL=jason@supertaco.dev
+      - NGINX_PROXY_CONTAINER=test_nginx_proxy_container
+    depends_on:
+      - nginx-proxy
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+
+
+  ## END NGINX PROXY...
+
+
+  ## SWARMPIT
+
+  app:
+    image: swarmpit/swarmpit:latest
+    environment:
+      - SWARMPIT_DB=http://db:5984
+      - SWARMPIT_INFLUXDB=http://influxdb:8086
+      - VIRTUAL_HOST=swarm.supertaco.dev
+      - VIRTUAL_PORT=8080
+      - LETSENCRYPT_HOST=swarm.supertaco.dev
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - 888:8080
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1024M
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+      placement:
+        constraints:
+          - node.role == manager
+
+  db:
+    image: couchdb:2.3.0
+    volumes:
+      - db-data:/opt/couchdb/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.30'
+          memory: 256M
+        reservations:
+          cpus: '0.15'
+          memory: 128M
+
+  influxdb:
+    image: influxdb:1.7
+    volumes:
+      - influx-data:/var/lib/influxdb
+    deploy:
+      resources:
+        limits:
+          cpus: '0.60'
+          memory: 512M
+        reservations:
+          cpus: '0.30'
+          memory: 128M
+
+  agent:
+    image: swarmpit/agent:latest
+    environment:
+      - DOCKER_API_VERSION=1.35
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    deploy:
+      mode: global
+      labels:
+        swarmpit.agent: 'true'
+      resources:
+        limits:
+          cpus: '0.10'
+          memory: 64M
+        reservations:
+          cpus: '0.05'
+          memory: 32M
+
+  ## END SWARMPIT
+
+# networks:
+#   net:
+#     driver: overlay
+#     attachable: true
+
+volumes:
+  db-data:
+    driver: local
+  influx-data:
+    driver: local
+  pg-data:
+  nginx-certs:
+  nginx-vhost:
+  nginx-html:
+  
