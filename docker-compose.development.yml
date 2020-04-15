@@ -3,6 +3,24 @@ services:
 
   # https://codewithhugo.com/docker-compose-local-https/
 
+  # to use the dev env locally, use:
+  # docker-compose -f docker-compose.development.yml up
+
+  taco_db:
+    image: postgres:9.6
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB=taco_dev
+    restart: on-failure
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
   taco_web: &taco_app
     build:
       context: .
@@ -19,14 +37,17 @@ services:
       - POSTGRES_PASSWORD
       - NODE_ENV=development
       - RAILS_ENV=development
+      - RAILS_SERVE_STATIC_FILES=true
       - MASTER_KEY
       - RAILS_MASTER_KEY
+    ports: 
+      - 8080
     depends_on:
       - taco_db
-    restart: unless-stopped
+    restart: on-failure
     deploy:
       mode: replicated
-      replicas: 2
+      replicas: 1
       restart_policy:
         condition: on-failure
 
@@ -44,6 +65,7 @@ services:
       - RAILS_MASTER_KEY
     depends_on:
       - taco_db
+    restart: on-failure
     deploy:
       mode: replicated
       replicas: 5
@@ -63,3 +85,6 @@ services:
     depends_on:
       - taco_web
     restart: unless-stopped
+
+volumes:
+  pg-data:

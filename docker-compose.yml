@@ -1,7 +1,7 @@
 version: '3.3'
 services:
 
-  # to incorporate the .env file use:
+  # to incorporate the .env file for a prod stack, use:
   # env $(cat .env | grep ^[A-Z] | xargs) docker stack deploy --compose-file docker-compose.yml test31
   
   ## TACO APP SERVICES
@@ -14,20 +14,6 @@ services:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
       - POSTGRES_DB
-
-
-  # taco_web:
-  #   image: crccheck/hello-world
-  #   ports:
-  #     - 8081:8000
-  #   networks:
-  #     - net
-  #     - default
-  #   environment:
-  #     - VIRTUAL_HOST=supertaco.dev
-  #     - VIRTUAL_PORT=8000
-  #     - LETSENCRYPT_HOST=supertaco.dev
-
 
   taco_web:
     build:
@@ -53,6 +39,7 @@ services:
       - 8080
     depends_on:
       - taco_db
+    restart: on-failure
     deploy:
       mode: replicated
       replicas: 1

@@ -61,7 +61,9 @@ done
 
 docker-machine ssh $NODE_PREFIX-node-1 docker node ls
 
-docker-machine ssh $NODE_PREFIX-node-1 cd taco-rails-docker && docker-machine ssh $NODE_PREFIX-node-1 sh ./deployment/deploy.sh
+# IMPORTANT: I must update my DNS _first_, and ensure that's pointing to these new nodes
+# when a `ping` command points the domain at the new manager node IP address as expected, then run the deploy command on the manager node.
+# docker-machine ssh $NODE_PREFIX-node-1 cd taco-rails-docker && docker-machine ssh $NODE_PREFIX-node-1 sh ./deployment/deploy.sh
 
 # I might be able to share these?
 # https://medium.com/@cweinberger/docker-machine-export-and-import-34ae2899e9d7

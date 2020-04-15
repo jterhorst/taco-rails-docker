@@ -14,6 +14,7 @@ COPY ./ ./
 RUN gem install bundler && bundle install
 
 RUN npm install
+RUN yarn install --check-files
 
 # Add a script to be executed every time the container starts. This frames up env vars.
 COPY entrypoint.sh /usr/bin/

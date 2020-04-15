@@ -16,6 +16,8 @@ bundle exec rake db:seed
 mkdir tmp
 mkdir tmp/pids
 
+bundle exec yarn install --check-files
+
 bundle exec rake assets:precompile
 
 exec bundle exec puma -C config/puma.rb -b 'tcp://0.0.0.0:8080'
