@@ -8,32 +8,13 @@ on:
 
 jobs:
   build:
-    name: Run Rake test suite
-
+    name: Run Rake test suite via Docker container
     runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:11
-        ports:
-          - 5432:5432
-        env:
-          POSTGRES_USER: chef
-          POSTGRES_PASSWORD: Toodles715
-          POSTGRES_DB: taco_test
-          
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Ruby 2.6.5
-      uses: actions/setup-ruby@v1
-      with:
-        ruby-version: 2.6.5
-    - name: Build and test with Rake
+    - name: Build stack
+      run: docker-compose -f docker-compose.development.yml up -d --build
+    - name: Run tests
       run: |
-        gem install bundler
-        bundle install --jobs 4 --retry 3
-        echo "${{ secrets.MASTER_KEY }}" > config/master.key
-        bundle exec rake db:setup RAILS_ENV=test
-        bundle exec npm install
-        RAILS_ENV=test NODE_ENV=test bundle exec rails webpacker:compile
-        bundle exec rake test
+        docker-compose run -e "RAILS_ENV=test" taco_web rake db:create db:migrate
+        docker-compose run -e "RAILS_ENV=test" taco_web rake test

@@ -43,7 +43,7 @@ cp ./taco.docker.pem ./nginx/certs/taco.docker.crt
 cp ./taco.docker-key.pem ./nginx/certs/taco.docker.key
 
 
-## Local Docker compose containers
+## Local Docker compose
 
 For local environment for development, use Docker Compose on a macOS system with Mojave or later. Linux might work, but untested. Windows is unknown.
 
@@ -51,9 +51,16 @@ To start dev environemnt...
 
 Add the file `config/master.key` into the app project with the contents of the key, and call this:
 
-## Local Docker services
-
 ```docker-compose -f docker-compose.development.yml up```
+
+## Running tests
+
+With the above running compose stack, run...
+
+```
+docker-compose run -e "RAILS_ENV=test" taco_web rake db:create db:migrate
+docker-compose run -e "RAILS_ENV=test" taco_web rake test
+```
 
 ## swarm deploy
 
@@ -61,12 +68,14 @@ _(IMPORTANT: If you don't add the master key with one of the above methods, it w
 
 source: https://medium.com/softonic-eng/docker-compose-from-development-to-production-88000124a57c
 
-for CI:
+for image builds to Docker Hub:
 ```
 docker-compose -f docker-compose.yml build
 docker-compose -f docker-compose.yml push
 ```
 
 ```
-env $(cat .env | grep ^[A-Z] | xargs) docker stack deploy --compose-file docker-compose.yml test
+env $(cat .env | grep ^[A-Z] | xargs) docker stack deploy --compose-file docker-compose.yml stack-name
 ```
+
+(Replace `stack-name` with the name you wish to use.)
