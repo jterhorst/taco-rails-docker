@@ -51,16 +51,11 @@ To start dev environemnt...
 
 Add the file `config/master.key` into the app project with the contents of the key, and call this:
 
-## Local Docker swarm services
+## Local Docker services
 
-```docker-compose up -d```
+```docker-compose -f docker-compose.development.yml up```
 
-## Staging (production-rehearsal) swarm deploy
-
-WIP production deploy
-
-```docker stack deploy --compose-file docker-compose.yml --with-registry-auth my-stack-name```
-
+## swarm deploy
 
 _(IMPORTANT: If you don't add the master key with one of the above methods, it will fail to deploy. This is an additional layer to protect secrets in this repo. Do not share the master key, and don't commit the master key in Git or other version control systems.)_
 
@@ -72,13 +67,6 @@ docker-compose -f docker-compose.yml build
 docker-compose -f docker-compose.yml push
 ```
 
-deploy to prod:
 ```
-docker stack deploy my-stack --compose-file docker-compose.yml --with-registry-auth
-```
-
-staging:
-```
-export API_ENDPOINT=http://staging.my-api.com
-docker stack deploy my-stack --compose-file docker-compose.yml --with-registry-auth
+env $(cat .env | grep ^[A-Z] | xargs) docker stack deploy --compose-file docker-compose.yml test
 ```

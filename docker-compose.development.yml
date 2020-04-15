@@ -3,17 +3,27 @@ services:
 
   # https://codewithhugo.com/docker-compose-local-https/
 
+  ## RUNNING...
+
   # to use the dev env locally, use:
   # docker-compose -f docker-compose.development.yml up
+  # building a fresh copy just needs `--build` added at the end
+
+  ## TESTS...
+
+  # while it's up and running locally, use these to run tests:
+  # docker-compose run -e "RAILS_ENV=test" taco_web rake db:create db:migrate
+  # docker-compose run -e "RAILS_ENV=test" taco_web rake test
 
   taco_db:
     image: postgres:9.6
     volumes:
       - pg-data:/var/lib/postgresql/data
+      - ./pg-init-scripts:/docker-entrypoint-initdb.d
     environment:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
-      - POSTGRES_DB=taco_dev
+      - POSTGRES_MULTIPLE_DATABASES=taco_dev,taco_test
     restart: on-failure
     deploy:
       mode: replicated
