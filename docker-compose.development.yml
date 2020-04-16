@@ -37,7 +37,7 @@ services:
       dockerfile: web.Dockerfile
     image: jterhorst/taco-rails
     volumes:
-      - ./:/web
+      - web-project:/web
     environment:
       - VIRTUAL_HOST=taco.docker
       - VIRTUAL_PORT=8080
@@ -61,9 +61,38 @@ services:
       restart_policy:
         condition: on-failure
 
+  taco_webpack_dev_server:
+    <<: *taco_app
+    command: "./startup_webpack_dev.sh"
+    volumes:
+      - web-project:/web
+    environment:
+      - NODE_ENV=development
+      - RAILS_ENV=development
+      - POSTGRES_HOST
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - MASTER_KEY
+      - RAILS_MASTER_KEY
+    ports:
+      - 3035
+    depends_on:
+      - taco_db
+    restart: on-failure
+    deploy:
+      mode: replicated
+      replicas: 5
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == manager]
+
   taco_worker:
     <<: *taco_app
     command: "bundle exec bin/rake jobs:work"
+    volumes:
+      - web-project:/web
     environment:
       - NODE_ENV=development
       - RAILS_ENV=development
@@ -98,3 +127,9 @@ services:
 
 volumes:
   pg-data:
+  web-project:
+    driver: local
+    driver_opts:
+      type: none
+      device: $PWD
+      o: bind
