@@ -49,13 +49,6 @@ services:
       - taco_db
     restart: on-failure
     deploy:
-      resources:
-        limits:
-          cpus: '0.30'
-          memory: 1756M
-        reservations:
-          cpus: '0.15'
-          memory: 1256M
       mode: replicated
       replicas: 1
       restart_policy:
