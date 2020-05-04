@@ -1,6 +1,10 @@
 version: '3.3'
 services:
 
+  # webpack hmr works in Docker with this:
+  # https://github.com/AirWick219/react-rails-hmr-docker-example
+
+
   # debug with image: yeasy/simple-web:latest
 
   # https://codewithhugo.com/docker-compose-local-https/
