@@ -21,7 +21,7 @@
     "webpack-dev-server": "^3.10.3"
   },
   "scripts": {
-    "start": "bin/webpack-dev-server --watch --progress --hot"
+    "start": "sh -c 'rm -rf public/packs/* || lstrue && bin/webpack-dev-server'"
   },
   "engines": {
     "npm": "^5.8.0"

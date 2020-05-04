@@ -1,0 +1,2 @@
+web: ./startup_dev.sh
+hot: sh -c 'rm -rf public/packs/* || lstrue && npm start'

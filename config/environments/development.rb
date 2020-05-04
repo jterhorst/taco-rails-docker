@@ -57,7 +57,7 @@ Rails.application.configure do
   config.assets.quiet = true
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  config.force_ssl = true
+  config.force_ssl = false
 
   # Raises error for missing translations.
   # config.action_view.raise_on_missing_translations = true

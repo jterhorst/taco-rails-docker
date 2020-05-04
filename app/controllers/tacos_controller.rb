@@ -7,7 +7,7 @@ class TacosController < ApplicationController
     @tacos = Taco.all
 
     respond_to do |format|
-      format.html { render component: 'Tacos', props: { tacos: @tacos } }
+      format.html { render :index }
       format.json { render @tacos }
     end
   end

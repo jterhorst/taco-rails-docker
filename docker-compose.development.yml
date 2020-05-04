@@ -1,6 +1,8 @@
 version: '3.3'
 services:
 
+  # debug with image: yeasy/simple-web:latest
+
   # https://codewithhugo.com/docker-compose-local-https/
 
   ## RUNNING...
@@ -31,27 +33,31 @@ services:
       restart_policy:
         condition: on-failure
 
-  taco_web: &taco_app
+  taco_web:
     build:
       context: .
       dockerfile: web.Dockerfile
     image: jterhorst/taco-rails
+    # image: yeasy/simple-web:latest
+    command: "bundle exec foreman start -f Procfile.dev"
     volumes:
       - web-project:/web
+    # Required for debug breakpoints
+    tty: true
+    stdin_open: true
     environment:
-      - VIRTUAL_HOST=taco.docker
-      - VIRTUAL_PORT=8080
+      - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
       - POSTGRES_HOST
       - POSTGRES_DB
       - POSTGRES_USER
       - POSTGRES_PASSWORD
       - NODE_ENV=development
       - RAILS_ENV=development
-      - RAILS_SERVE_STATIC_FILES=true
       - MASTER_KEY
       - RAILS_MASTER_KEY
     ports: 
-      - 8080
+      - "3000:3000"
+      - "3035:3035"
     depends_on:
       - taco_db
     restart: on-failure
@@ -61,35 +67,11 @@ services:
       restart_policy:
         condition: on-failure
 
-  taco_webpack_dev_server:
-    <<: *taco_app
-    command: "./startup_webpack_dev.sh"
-    volumes:
-      - web-project:/web
-    environment:
-      - NODE_ENV=development
-      - RAILS_ENV=development
-      - POSTGRES_HOST
-      - POSTGRES_DB
-      - POSTGRES_USER
-      - POSTGRES_PASSWORD
-      - MASTER_KEY
-      - RAILS_MASTER_KEY
-    ports:
-      - 3035
-    depends_on:
-      - taco_db
-    restart: on-failure
-    deploy:
-      mode: replicated
-      replicas: 5
-      restart_policy:
-        condition: on-failure
-      placement:
-        constraints: [node.role == manager]
-
   taco_worker:
-    <<: *taco_app
+    build:
+      context: .
+      dockerfile: web.Dockerfile
+    image: jterhorst/taco-rails
     command: "bundle exec bin/rake jobs:work"
     volumes:
       - web-project:/web
@@ -113,17 +95,17 @@ services:
       placement:
         constraints: [node.role == manager]
 
-  proxy:
-    image: jwilder/nginx-proxy:latest
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./nginx/certs:/etc/nginx/certs
-    depends_on:
-      - taco_web
-    restart: unless-stopped
+#   proxy:
+#     image: jwilder/nginx-proxy:latest
+#     ports:
+#       - "80:80"
+#       - "443:443"
+#     volumes:
+#       - /var/run/docker.sock:/tmp/docker.sock:ro
+#       - ./nginx/certs:/etc/nginx/certs
+#     depends_on:
+#       - taco_web
+#     restart: unless-stopped
 
 volumes:
   pg-data:

@@ -9,5 +9,4 @@ export POSTGRES_PASSWORD=$POSTGRES_PASSWORD
 
 ./startup_prepare.sh
 
-# exec bundle exec puma -C config/puma.rb -b 'tcp://0.0.0.0:8080'
-exec bundle exec npm start
+exec bundle exec puma -C config/puma.rb -b 'tcp://0.0.0.0:3000'
