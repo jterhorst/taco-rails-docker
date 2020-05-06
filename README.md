@@ -44,11 +44,7 @@ mkcert taco.docker
 cp ./taco.docker.pem ./nginx/certs/taco.docker.crt
 cp ./taco.docker-key.pem ./nginx/certs/taco.docker.key
 
-For webpack dev server, you might need something like this:
-
-mkcert 192.168.7.70 localhost 127.0.0.1 0.0.0.0
-
-Then use the cp commands above to name those taco.localhost.crt and taco.localhost.key.
+For webpack dev server, you might need something to accept the self-signed cert.
 
 For debugging in Safari, open Keychain and remove existing items for `localhost` from this project. Then navigate to `/node_modules/webpack-dev-server/ssl/` and import `server.pem` into your default keychain (probably login).
 
