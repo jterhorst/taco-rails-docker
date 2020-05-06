@@ -3,7 +3,7 @@ Experiment with Rails, Docker/Docker Machine, local domains, and delayed jobs
 
 ### objectives:
 - [x] Dummy Rails 6 app, with React/webpack running, basic controller and tests
-- [ ] webpack-dev-server should do hot reloading on docker local.
+- [x] webpack-dev-server should do hot reloading on docker local.
 - [x] Delayed Jobs and cron to create a new daily taco special
 - [x] Run a postgres node for dev/test, but on prod use a hosted instance.
 - [x] Use a local domain - `taco.local` or `taco.test` - to access this Rails app running in (almost) the same env as it would in the cloud.
@@ -11,10 +11,12 @@ Experiment with Rails, Docker/Docker Machine, local domains, and delayed jobs
 - [ ] Basic tests which run with Github Actions and push a build to Docker Hub when successful. Then deploy to the cloud on success.
 
 ## goals for later:
-- [ ] Switch from nginx to Traefik for load balancer/frontend to use it for SSL with Certbot, allowing for DNS challenge and wildcard cert. (more [here](https://docs.traefik.io/v1.7/configuration/acme/) and [here](https://docs.traefik.io/v1.7/user-guide/docker-and-lets-encrypt/)) - [Docker](https://hub.docker.com/_/traefik/)
+- [ ] (Maybe?) Switch from nginx to Traefik for load balancer/frontend to use it for SSL with Certbot, allowing for DNS challenge and wildcard cert. (Currently, we have to manually specify all domains in the docker-compose file.) ([more about wildcards and Traefik here](https://docs.traefik.io/v1.7/configuration/acme/) and [here](https://docs.traefik.io/v1.7/user-guide/docker-and-lets-encrypt/)) - [Docker](https://hub.docker.com/_/traefik/)
 
 ## Other TODO tasks
 
+* Clean up these warnings:
+```
 npm WARN npm npm does not support Node.js v10.15.2
 npm WARN npm You should probably upgrade to a newer version of node as we
 npm WARN npm can't make any promises that npm will work with this version.
@@ -22,12 +24,12 @@ npm WARN npm Supported releases of Node.js are the latest release of 4, 6, 7, 8,
 npm WARN npm You can find the latest version at https://nodejs.org/
 npm WARN fsevents@1.2.11 had bundled packages that do not match the required version(s). They have been replaced with non-bundled versions.
 npm WARN react-hot-loader@4.12.20 requires a peer of @types/react@^15.0.0 || ^16.0.0 but none is installed. You must install peer dependencies yourself.
-
+```
 
 ## Local domain
 
 In your `/etc/hosts` file, add the line `127.0.0.1   taco.docker`
-
+(If you want a different address, you'll need to update the instructions for mkcert below)
 
 ## Local SSL
 
@@ -42,6 +44,21 @@ mkcert taco.docker
 cp ./taco.docker.pem ./nginx/certs/taco.docker.crt
 cp ./taco.docker-key.pem ./nginx/certs/taco.docker.key
 
+For webpack dev server, you might need something like this:
+
+mkcert 192.168.7.70 localhost 127.0.0.1 0.0.0.0
+
+Then use the cp commands above to name those taco.localhost.crt and taco.localhost.key.
+
+## Webpack-dev-server and SSL locally
+
+The webpack-dev-server in development starts itself with a self-signed SSL cert.
+You'll need to direct your browser to that page at `https://localhost:3035/` and accept the cert manually. Within the container, taco.docker communicates with webpack-dev-server just fine.
+
+## About webpack-dev-server and docker
+
+It's been an impossible task to have the dev server in a separate container and acheive SSL and HMR (hot reloading). 
+The compromise was to put them in the same container, and use a script to call Foreman (with processes outlined in Procfile.dev) to launch both the puma (Rails server) and webpack-dev-server (via npm start). 
 
 ## Local Docker compose
 

@@ -11,6 +11,8 @@ require 'faker'
 #   ActiveRecord::Base.connection.reset_sequence!(t)
 # end
 
+Taco.delete_all
+
 25.times do
   name = Faker::Food.dish
   description = Faker::Food.description
@@ -19,4 +21,4 @@ require 'faker'
   Taco.create(name: name, price: price, description: description, cheese: Faker::Boolean.boolean, lettuce: Faker::Boolean.boolean, meat: meat, tortilla: Faker::Boolean.boolean, beans: Faker::Boolean.boolean)
 end
 
-Delayed::Job.enqueue(TacoSpecialJob.new,cron: '*/5 * * * *')
+# Delayed::Job.enqueue(TacoSpecialJob.new,cron: '* */5 * * *')
