@@ -50,6 +50,8 @@ mkcert 192.168.7.70 localhost 127.0.0.1 0.0.0.0
 
 Then use the cp commands above to name those taco.localhost.crt and taco.localhost.key.
 
+For debugging in Safari, open Keychain and remove existing items for `localhost` from this project. Then navigate to `/node_modules/webpack-dev-server/ssl/` and import `server.pem` into your default keychain (probably login).
+
 ## Webpack-dev-server and SSL locally
 
 The webpack-dev-server in development starts itself with a self-signed SSL cert.
