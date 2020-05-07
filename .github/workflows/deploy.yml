@@ -8,7 +8,6 @@ jobs:
     - name: Push to docker
       run: |
         docker push jterhorst/taco-rails:latest
-    - uses: jcblw/bash@1.0.0
-      name: Hello there
+    - name: Hello there
       run: |
         echo 'Hello there'
