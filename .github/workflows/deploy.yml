@@ -1,0 +1,14 @@
+name: Deploy to swarm
+
+jobs:
+  build:
+    name: Push the latest published image to our nodes
+    runs-on: ubuntu-latest
+    steps:
+    - name: Push to docker
+      run: |
+        docker push jterhorst/taco-rails:latest
+    - uses: jcblw/bash@1.0.0
+      name: Hello there
+      run: |
+        echo 'Hello there'
