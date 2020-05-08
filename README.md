@@ -94,3 +94,16 @@ env $(cat .env | grep ^[A-Z] | xargs) docker stack deploy --compose-file docker-
 ```
 
 (Replace `stack-name` with the name you wish to use.)
+
+
+### Node setup
+
+Use `docker-machine-node-init.sh` locally to create the nodes you need.
+
+### Export machines
+
+```
+npm install -g machine-share
+machine-export {machine-name}
+machine-import {machine-name.zip}
+```

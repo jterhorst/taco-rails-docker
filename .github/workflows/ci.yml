@@ -28,6 +28,13 @@ jobs:
     - name: Push to docker
       run: |
         docker push jterhorst/taco-rails:latest
-    - name: Hello there
+    - name: Deploy
       run: |
-        echo 'Hello there'
+        echo "${{ secrets.TACO_NODE_1_ZIP }}" > taco-4-15-node-1.zip
+        npm install -g machine-share
+        machine-import taco-4-15-node-1.zip
+        docker-machine ssh taco-4-15-node-1 "
+        cd taco-rails-docker;
+        git fetch origin;
+        git reset --hard origin/master;
+        ./deployment/deploy.sh;"
