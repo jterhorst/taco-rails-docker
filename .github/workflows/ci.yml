@@ -16,6 +16,7 @@ jobs:
       run: |
         echo "${{ secrets.MASTER_KEY }}" > config/master.key
         echo "${{ secrets.ENV }}" > .env
+        ${{ secrets.DOCKER_HUB_TOKEN }} | docker login --username jterhorst --password-stdin
         docker build -f web.Dockerfile -t jterhorst/taco-rails:$GITHUB_RUN_ID -t jterhorst/taco-rails:latest .
     - name: Run tests
       run: |
