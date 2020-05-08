@@ -1,0 +1,20 @@
+name: Deploy latest built image
+
+# on:
+#   push:
+#     branches: [ master ]
+#   pull_request:
+#     branches: [ master ]
+
+jobs:
+  build:
+    name: Run Rake test suite via Docker container
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Deploy
+      run: |
+        echo "${{ secrets.TACO_NODE_1_ZIP }}" > taco-4-15-node-1.zip
+        npm install -g machine-share
+        machine-import taco-4-15-node-1.zip
+        docker-machine ssh taco-4-15-node-1 "cd taco-rails-docker; git fetch origin; git reset --hard origin/master; ./deployment/deploy.sh;"
