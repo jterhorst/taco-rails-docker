@@ -20,7 +20,8 @@ jobs:
     - name: Deploy
       run: |
         unzip -P ${{ secrets.MACHINES_ZIP_PASSWORD }} machines.zip
-        npm install -g machine-share
-        machine-import taco-4-15-node-1.zip
+        unzip taco-4-15-node-1.zip
+        cp ./taco-4-15-node-1/id_rsa ~/.ssh/taco_id_rsa
+        cp ./taco-4-15-node-1/id_rsa.pub ~/.ssh/taco_id_rsa.pub
         ./rdocker.sh root@142.93.178.223 "cd taco-rails-docker; git fetch origin; git reset --hard origin/master; ./deployment/deploy.sh;"
         
