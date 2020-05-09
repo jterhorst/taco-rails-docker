@@ -14,15 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
+    - name: Deploy to swarm
+      uses: sagebind/docker-swarm-deploy-action@v2
       with:
-        node-version: '12'
-    - name: Deploy
-      run: |
-        unzip -P ${{ secrets.MACHINES_ZIP_PASSWORD }} machines.zip
-        unzip taco-4-15-node-1.zip
-        mkdir ~/.ssh
-        cp id_rsa ~/.ssh/taco_id_rsa
-        cp id_rsa.pub ~/.ssh/taco_id_rsa.pub
-        ./rdocker.sh root@142.93.178.223 "cd taco-rails-docker; git fetch origin; git reset --hard origin/master; ./deployment/deploy.sh;"
-        
+        remote_host: ssh://root@supertaco.dev
+        ssh_private_key: ${{ secrets.DOCKER_SSH_PRIVATE_KEY }}
+        ssh_public_key: ${{ secrets.DOCKER_SSH_PUBLIC_KEY }}
+        args: stack deploy --compose-file docker-compose.yml test
+
+# ./rdocker.sh root@142.93.178.223 "cd taco-rails-docker; git fetch origin; git reset --hard origin/master; ./deployment/deploy.sh;"
