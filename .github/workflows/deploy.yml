@@ -18,7 +18,8 @@ jobs:
       run: |
         mkdir ~/.ssh
         echo "" > ~/.ssh/known_hosts
-        ssh-keyscan -H supertaco.dev >> ~/.ssh/known_hosts
+        ssh-keyscan -H supertaco.dev > ~/.ssh/known_hosts
+        ssh-keyscan -H 142.93.178.223 >> ~/.ssh/known_hosts
     - name: Deploy to swarm
       uses: sagebind/docker-swarm-deploy-action@v2
       with:
