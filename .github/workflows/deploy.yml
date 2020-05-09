@@ -21,6 +21,7 @@ jobs:
       run: |
         unzip -P ${{ secrets.MACHINES_ZIP_PASSWORD }} machines.zip
         unzip taco-4-15-node-1.zip
+        mkdir ~/.ssh
         cp id_rsa ~/.ssh/taco_id_rsa
         cp id_rsa.pub ~/.ssh/taco_id_rsa.pub
         ./rdocker.sh root@142.93.178.223 "cd taco-rails-docker; git fetch origin; git reset --hard origin/master; ./deployment/deploy.sh;"
