@@ -6,6 +6,8 @@ on:
   pull_request:
     branches: [ master ]
 
+# docker-machine ssh taco-4-15-node-1 "cd taco-rails-docker; git fetch origin; git reset --hard origin/master; ./deployment/deploy.sh;"
+
 jobs:
   build:
     name: Run Rake test suite via Docker container
@@ -20,4 +22,5 @@ jobs:
         unzip -P ${{ secrets.MACHINES_ZIP_PASSWORD }} machines.zip
         npm install -g machine-share
         machine-import taco-4-15-node-1.zip
-        docker-machine ssh taco-4-15-node-1 "cd taco-rails-docker; git fetch origin; git reset --hard origin/master; ./deployment/deploy.sh;"
+        ./rdocker.sh root@142.93.178.223 "cd taco-rails-docker; git fetch origin; git reset --hard origin/master; ./deployment/deploy.sh;"
+        
