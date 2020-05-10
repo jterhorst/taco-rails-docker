@@ -1,10 +1,10 @@
 name: Rails tests
 
-# on:
-#   push:
-#     branches: [ master ]
-#   pull_request:
-#     branches: [ master ]
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   build:
@@ -14,27 +14,15 @@ jobs:
     - uses: actions/checkout@v2
     - name: Build stack
       run: |
-    #     echo "${{ secrets.MASTER_KEY }}" > config/master.key
-    #     echo "${{ secrets.ENV }}" > .env
-    #     docker login --username jterhorst --password ${{ secrets.DOCKER_HUB_TOKEN }}
-    #     docker build -f web.Dockerfile -t jterhorst/taco-rails:$GITHUB_RUN_ID -t jterhorst/taco-rails:latest .
-    # - name: Run tests
-    #   run: |
-    #     docker-compose -f docker-compose.development.yml up -d
-    #     docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web npm install
-    #     docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web bundle exec rails webpacker:compile
-    #     docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web rake db:create db:migrate
-    #     docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web rake test
-    # - name: Push to docker
-    #   run: |
-    #     docker push jterhorst/taco-rails:latest
-    # - name: Deploy
-    #   run: |
-    #     echo "${{ secrets.TACO_NODE_1_ZIP }}" > taco-4-15-node-1.zip
-    #     npm install -g machine-share
-    #     machine-import taco-4-15-node-1.zip
-    #     docker-machine ssh taco-4-15-node-1 "
-    #     cd taco-rails-docker;
-    #     git fetch origin;
-    #     git reset --hard origin/master;
-    #     ./deployment/deploy.sh;"
+        echo "${{ secrets.MASTER_KEY }}" > config/master.key
+        echo "${{ secrets.ENV }}" > .env
+        docker login --username jterhorst --password ${{ secrets.DOCKER_HUB_TOKEN }}
+        docker build -f web.Dockerfile -t jterhorst/taco-rails:$GITHUB_RUN_ID -t jterhorst/taco-rails:latest .
+    - name: Run tests
+      run: |
+        docker-compose -f docker-compose.development.yml up -d
+        docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web npm install
+        docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web bundle exec rails webpacker:compile
+        docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web rake db:create db:migrate
+        docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web rake test
+
