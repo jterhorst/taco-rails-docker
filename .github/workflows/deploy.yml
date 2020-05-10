@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Inject to known hosts
+    - name: Deploy
       run: |
         mkdir ~/.ssh
         echo "" > ~/.ssh/known_hosts
@@ -24,7 +24,7 @@ jobs:
         chmod 400 ~/.ssh/id_rsa.pub
         ssh-keyscan -H supertaco.dev > ~/.ssh/known_hosts
         ssh-keyscan -H 142.93.178.223 >> ~/.ssh/known_hosts
-        ssh root@supertaco.dev
+        ssh root@supertaco.dev && cd taco-rails-docker && git fetch origin && git reset --hard origin/master && ./deployment/deploy.sh
     # - name: Deploy to swarm
     #   uses: sagebind/docker-swarm-deploy-action@v2
     #   with:
