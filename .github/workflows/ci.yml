@@ -16,7 +16,7 @@ jobs:
         docker build -f web.Dockerfile -t jterhorst/taco-rails:$GITHUB_RUN_ID -t jterhorst/taco-rails:latest .
     - name: Run tests
       run: |
-        chmod +x /etc/hosts
+        sudo chmod +x /etc/hosts
         echo "127.0.0.1 taco.docker" >> /etc/hosts
         docker-compose -f docker-compose.development.yml up -d
         docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web npm install
