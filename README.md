@@ -46,7 +46,7 @@ cp ./taco.docker-key.pem ./nginx/certs/taco.docker.key
 
 For webpack dev server, you might need something to accept the self-signed cert.
 
-For debugging in Safari, open Keychain and remove existing items for `localhost` from this project. Then navigate to `/node_modules/webpack-dev-server/ssl/` and import `server.pem` into your default keychain (probably login).
+For debugging in Safari, open Keychain and remove existing items for `localhost` from this project. Then navigate to `/node_modules/webpack-dev-server/ssl/` and import `server.pem` into your default keychain (probably login). You must then "Get Info" on this localhost certificate, and set it to "Always Trust".
 
 ## Webpack-dev-server and SSL locally
 
