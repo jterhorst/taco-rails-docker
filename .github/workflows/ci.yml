@@ -17,12 +17,12 @@ jobs:
     - name: Run tests
       run: |
         sudo apt install libnss3-tools
-        sudo add-apt-repository ppa:longsleep/golang-backports
-        sudo apt update
-        sudo apt install golang-go
-        git clone https://github.com/FiloSottile/mkcert && cd mkcert
-        go build -ldflags "-X main.Version=$(git describe --tags)"
-        mkcert -install && cd ..
+        test -d ~/.linuxbrew && eval $(~/.linuxbrew/bin/brew shellenv)
+        test -d /home/linuxbrew/.linuxbrew && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+        test -r ~/.bash_profile && echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.bash_profile
+        echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.profile
+        brew install mkcert
+        mkcert -install
         ./mkcert/mkcert taco.docker
         cp ./taco.docker.pem ./nginx/certs/taco.docker.crt
         cp ./taco.docker-key.pem ./nginx/certs/taco.docker.key
