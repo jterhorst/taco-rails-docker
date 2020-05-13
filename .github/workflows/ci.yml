@@ -23,7 +23,7 @@ jobs:
         echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.profile
         brew install mkcert
         mkcert -install
-        ./mkcert/mkcert taco.docker
+        mkcert taco.docker
         cp ./taco.docker.pem ./nginx/certs/taco.docker.crt
         cp ./taco.docker-key.pem ./nginx/certs/taco.docker.key
         echo "127.0.0.1 taco.docker" | sudo tee -a /etc/hosts
