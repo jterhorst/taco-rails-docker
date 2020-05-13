@@ -7,7 +7,8 @@ describe('Actions', () => {
     })
 
     it('Displays a title', () => {
-        cy.visit('http://host.docker.internal:3000');
+        cy.visit('http://127.0.0.1:3000');
+        // on macOS hosts, use host.docker.internal
 
         cy.contains('Tacos');
     })
