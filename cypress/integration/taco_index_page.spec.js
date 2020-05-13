@@ -7,7 +7,7 @@ describe('Actions', () => {
     })
 
     it('Displays a title', () => {
-        cy.visit('https://taco.docker');
+        cy.visit('http://127.0.0.1:3000');
 
         cy.contains('Tacos');
     })

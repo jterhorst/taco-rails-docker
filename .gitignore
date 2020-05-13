@@ -74,3 +74,7 @@ yarn-debug.log*
 yarn-debug.log*
 .yarn-integrity
 /cypress/videos
+/nginx/certs/taco.docker.crt
+/nginx/certs/taco.docker.key
+/taco.docker+2-key.pem
+/taco.docker+2.pem

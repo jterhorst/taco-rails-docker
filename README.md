@@ -39,7 +39,7 @@ https://codewithhugo.com/docker-compose-local-https/
 then `mkcert -install`
 (more here https://github.com/FiloSottile/mkcert#installation)
 
-mkcert taco.docker
+mkcert taco.docker localhost 127.0.0.1
 
 cp ./taco.docker.pem ./nginx/certs/taco.docker.crt
 cp ./taco.docker-key.pem ./nginx/certs/taco.docker.key
