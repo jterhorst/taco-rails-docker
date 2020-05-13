@@ -23,5 +23,6 @@ jobs:
         docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web bundle exec rails webpacker:compile
         docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web rake db:create db:migrate
         docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web rake test
+        ./node_modules/.bin/cypress install
         ./node_modules/.bin/cypress run
 
