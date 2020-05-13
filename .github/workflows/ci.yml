@@ -33,5 +33,10 @@ jobs:
         docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web rake db:create db:migrate
         docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web rake test
         ./node_modules/.bin/cypress install
+        if curl -s --head  --request GET http://127.0.0.1:3000 | grep "200 OK" > /dev/null; then 
+            echo "\n ----- \n web service is UP \n\n"
+        else
+            echo "\n ----- \n web service is DOWN \n\n"
+        fi
         ./node_modules/.bin/cypress run
 
