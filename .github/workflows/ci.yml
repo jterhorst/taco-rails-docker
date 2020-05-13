@@ -16,6 +16,16 @@ jobs:
         docker build -f web.Dockerfile -t jterhorst/taco-rails:$GITHUB_RUN_ID -t jterhorst/taco-rails:latest .
     - name: Run tests
       run: |
+        sudo apt install libnss3-tools
+        sudo add-apt-repository ppa:longsleep/golang-backports
+        sudo apt update
+        sudo apt install golang-go
+        git clone https://github.com/FiloSottile/mkcert && cd mkcert
+        go build -ldflags "-X main.Version=$(git describe --tags)"
+        mkcert -install && cd ..
+        ./mkcert/mkcert taco.docker
+        cp ./taco.docker.pem ./nginx/certs/taco.docker.crt
+        cp ./taco.docker-key.pem ./nginx/certs/taco.docker.key
         echo "127.0.0.1 taco.docker" | sudo tee -a /etc/hosts
         docker-compose -f docker-compose.development.yml up -d
         nslookup taco.docker
