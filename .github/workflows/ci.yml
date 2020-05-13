@@ -22,6 +22,5 @@ jobs:
         docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web rake db:create db:migrate
         docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web rake test
         docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web ./node_modules/.bin/cypress install
-        docker-compose run --network="host" -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web ./deployment/wait-until-web-ready.sh
         docker-compose run --network="host" -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web ./node_modules/.bin/cypress run
 
