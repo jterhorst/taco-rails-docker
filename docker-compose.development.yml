@@ -49,6 +49,7 @@ services:
     # Required for debug breakpoints
     tty: true
     stdin_open: true
+    ipc: host
     environment:
       - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
       - VIRTUAL_HOST=taco.docker

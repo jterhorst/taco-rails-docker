@@ -23,9 +23,9 @@ jobs:
         docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web rake db:create db:migrate
         docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web rake test
         echo "rails tests done. installing cypress."
-        docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web ./node_modules/.bin/cypress install
+        docker-compose run taco_web ./node_modules/.bin/cypress install
         CONTAINER_ADDR="docker-host"
         echo "container address: $CONTAINER_ADDR"
-        # docker-compose run -e "CYPRESS_BASE_URL=http://$CONTAINER_ADDR:8080" -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web ./deployment/wait-until-web-ready.sh
-        docker-compose run -e "CYPRESS_BASE_URL=http://$CONTAINER_ADDR:8080" -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web ./node_modules/.bin/cypress run
+        # docker-compose run -e "CYPRESS_BASE_URL=http://$CONTAINER_ADDR:8080" taco_web ./deployment/wait-until-web-ready.sh
+        docker-compose run -e "CYPRESS_BASE_URL=http://$CONTAINER_ADDR:8080" taco_web ./node_modules/.bin/cypress run
 
