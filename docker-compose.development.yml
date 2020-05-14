@@ -113,6 +113,11 @@ services:
       - taco_web
     restart: unless-stopped
 
+  docker-host:
+    image: qoomon/docker-host
+    cap_add: [ 'NET_ADMIN', 'NET_RAW' ]
+    restart: on-failure
+
 volumes:
   pg-data:
   web-project:

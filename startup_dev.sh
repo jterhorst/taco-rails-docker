@@ -9,4 +9,6 @@ export POSTGRES_PASSWORD=$POSTGRES_PASSWORD
 
 ./startup_prepare.sh
 
+ifconfig lo0 alias 123.123.123.123/24
+
 exec bundle exec puma -C config/puma.rb -b 'tcp://0.0.0.0:3000'
