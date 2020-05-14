@@ -28,4 +28,5 @@ jobs:
         echo "container address: $CONTAINER_ADDR"
         # docker-compose run -e "CYPRESS_BASE_URL=http://$CONTAINER_ADDR:8080" taco_web ./deployment/wait-until-web-ready.sh
         docker-compose run -e "CYPRESS_BASE_URL=http://$CONTAINER_ADDR:8080" taco_web ./node_modules/.bin/cypress run
+        docker-compose logs
 
