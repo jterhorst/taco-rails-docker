@@ -16,6 +16,12 @@ jobs:
         docker build -f web.Dockerfile -t jterhorst/taco-rails:$GITHUB_RUN_ID -t jterhorst/taco-rails:latest .
     - name: Run tests
       run: |
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+        brew install mkcert
+        mkcert -install
+        mkcert taco.docker localhost 127.0.0.1
+        cp ./taco.docker+2.pem ./nginx/certs/taco.docker.crt
+        cp ./taco.docker+2-key.pem ./nginx/certs/taco.docker.key
         docker-compose -f docker-compose.development.yml up -d
         echo "container booted. starting tests..."
         docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web npm install
@@ -23,11 +29,14 @@ jobs:
         docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web rake db:create db:migrate
         docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web rake test
         echo "rails tests done. installing cypress."
-        docker-compose run taco_web ./node_modules/.bin/cypress install
-        CONTAINER_ADDR="docker-host"
-        echo "container address: $CONTAINER_ADDR"
+        # docker-compose run taco_web ./node_modules/.bin/cypress install
+        # CONTAINER_ADDR="docker-host"
+        # echo "container address: $CONTAINER_ADDR"
         # docker-compose run -e "CYPRESS_BASE_URL=http://$CONTAINER_ADDR:8080" taco_web ./deployment/wait-until-web-ready.sh
-        docker-compose run -e "CYPRESS_BASE_URL=http://$CONTAINER_ADDR:8080" taco_web ./node_modules/.bin/cypress run --record --key 84ef6f9b-9832-4435-9739-ba53339c61ce
+        # docker-compose run -e "CYPRESS_BASE_URL=http://$CONTAINER_ADDR:8080" taco_web ./node_modules/.bin/cypress run --record --key 84ef6f9b-9832-4435-9739-ba53339c61ce
+        ./node_modules/.bin/cypress install
+        # CYPRESS_BASE_URL=https://taco.docker ./deployment/wait-until-web-ready.sh
+        CYPRESS_BASE_URL=https://taco.docker ./node_modules/.bin/cypress run --record --key 84ef6f9b-9832-4435-9739-ba53339c61ce
     - name: Spit out logs on failure
       if: ${{ failure() }}
       run: |
