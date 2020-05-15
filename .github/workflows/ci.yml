@@ -22,6 +22,7 @@ jobs:
         mkcert taco.docker localhost 127.0.0.1
         cp ./taco.docker+2.pem ./nginx/certs/taco.docker.crt
         cp ./taco.docker+2-key.pem ./nginx/certs/taco.docker.key
+        echo "127.0.0.1 taco.docker" | sudo tee -a /etc/hosts
         docker-compose -f docker-compose.development.yml up -d
         echo "container booted. starting tests..."
         docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web npm install
