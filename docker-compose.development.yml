@@ -29,7 +29,7 @@ services:
     environment:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
-      - POSTGRES_MULTIPLE_DATABASES=taco_dev,taco_test
+      - POSTGRES_MULTIPLE_DATABASES=taco_dev,taco_test,taco_prod
     restart: on-failure
     deploy:
       mode: replicated
