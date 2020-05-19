@@ -1,15 +1,22 @@
 /// <reference types="Cypress" />
 
-describe('Actions', () => {
+describe('Index page', () => {
 
     beforeEach(() => {
-        // cy.visit('https://example.cypress.io/commands/actions')
+        cy.visit('/');
     })
 
     it('Displays a title', () => {
-        cy.visit('/');
-        // on macOS hosts, use host.docker.internal
-
+        
         cy.contains('Tacos');
     })
+
+    it('Displays a link for taco creation', () => {
+        
+        cy.contains('New Taco').click();
+
+        cy.contains("New Taco")
+    })
+
+    
 })
