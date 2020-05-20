@@ -1,6 +1,10 @@
 # taco-rails-docker
 Experiment with Rails, Docker/Docker Machine, local domains, and delayed jobs
 
+![Deploy latest built image](https://github.com/jterhorst/taco-rails-docker/workflows/Deploy%20latest%20built%20image/badge.svg?branch=master)
+
+![Rails tests](https://github.com/jterhorst/taco-rails-docker/workflows/Rails%20tests/badge.svg)
+
 ### objectives:
 - [x] Dummy Rails 6 app, with React/webpack running, basic controller and tests
 - [x] webpack-dev-server should do hot reloading on docker local.
