@@ -23,7 +23,6 @@ jobs:
         docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web bundle exec rails webpacker:compile
         docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web rake db:create db:migrate
         docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web rake test
-        # echo "rails tests done. installing cypress."
         ./node_modules/.bin/cypress install
         CYPRESS_BASE_URL=http://localhost:8080 ./node_modules/.bin/cypress run --record --key 84ef6f9b-9832-4435-9739-ba53339c61ce
     - name: Spit out logs on failure
