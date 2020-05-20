@@ -16,9 +16,18 @@ jobs:
         docker build -f web.Dockerfile -t jterhorst/taco-rails:$GITHUB_RUN_ID -t jterhorst/taco-rails:latest .
     - name: Run tests
       run: |
-        docker-compose -f docker-compose.development.yml up -d
+        docker-compose -f docker-compose.test.yml up -d
+        CYPRESS_BASE_URL=http://localhost:8080 ./deployment/wait-until-web-ready.sh
+        echo "container booted. starting tests..."
         docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web npm install
         docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web bundle exec rails webpacker:compile
         docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web rake db:create db:migrate
         docker-compose run -e "RAILS_ENV=test" -e "NODE_ENV=test" taco_web rake test
+        # echo "rails tests done. installing cypress."
+        ./node_modules/.bin/cypress install
+        CYPRESS_BASE_URL=http://localhost:8080 ./node_modules/.bin/cypress run --record --key 84ef6f9b-9832-4435-9739-ba53339c61ce
+    - name: Spit out logs on failure
+      if: ${{ failure() }}
+      run: |
+        docker-compose logs
 

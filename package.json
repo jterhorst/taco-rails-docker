@@ -17,11 +17,19 @@
   },
   "version": "0.1.0",
   "devDependencies": {
+    "@testing-library/react": "^10.0.4",
+    "cypress": "^4.5.0",
+    "eslint": "^7.0.0",
+    "eslint-plugin-cypress": "^2.10.3",
+    "jest": "^26.0.1",
     "react-hot-loader": "^4.12.19",
     "webpack-dev-server": "^3.10.3"
   },
   "scripts": {
-    "start": "sh -c 'rm -rf public/packs/* || lstrue && bin/webpack-dev-server'"
+    "start": "sh -c 'rm -rf public/packs/* || lstrue && bin/webpack-dev-server'",
+    "test": "jest && ./node_modules/.bin/cypress run",
+    "cypress:open": "./node_modules/.bin/cypress open",
+    "cypress:run": "./node_modules/.bin/cypress run"
   },
   "engines": {
     "npm": "^5.8.0"

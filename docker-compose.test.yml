@@ -43,7 +43,7 @@ services:
       dockerfile: web.Dockerfile
     image: jterhorst/taco-rails
     # image: yeasy/simple-web:latest
-    command: "bundle exec foreman start -f Procfile.dev"
+    command: "./startup_test.sh"
     volumes:
       - web-project:/web
     # Required for debug breakpoints
@@ -51,17 +51,15 @@ services:
     stdin_open: true
     ipc: host
     environment:
-      - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
-      - VIRTUAL_HOST=taco.docker
-      - VIRTUAL_PORT=8080
       - POSTGRES_HOST
       - POSTGRES_DB
       - POSTGRES_USER
       - POSTGRES_PASSWORD
-      - NODE_ENV=development
-      - RAILS_ENV=development
+      - NODE_ENV=test
+      - RAILS_ENV=test
       - MASTER_KEY
       - RAILS_MASTER_KEY
+    #   - RAILS_SERVE_STATIC_FILES=true
     ports: 
       - "8080:8080"
       - "3035:3035"
@@ -83,8 +81,8 @@ services:
     volumes:
       - web-project:/web
     environment:
-      - NODE_ENV=development
-      - RAILS_ENV=development
+      - NODE_ENV=test
+      - RAILS_ENV=test
       - POSTGRES_HOST
       - POSTGRES_DB
       - POSTGRES_USER
@@ -101,23 +99,6 @@ services:
         condition: on-failure
       placement:
         constraints: [node.role == manager]
-
-  proxy:
-    image: jwilder/nginx-proxy:latest
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./nginx/certs:/etc/nginx/certs
-    depends_on:
-      - taco_web
-    restart: unless-stopped
-
-  docker-host:
-    image: qoomon/docker-host
-    cap_add: [ 'NET_ADMIN', 'NET_RAW' ]
-    restart: on-failure
 
 volumes:
   pg-data:
