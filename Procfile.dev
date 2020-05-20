@@ -1,2 +1,2 @@
 web: ./startup_dev.sh
-hot: ./startup_prepare.sh && sh -c 'rm -rf /web/node_modules/webpack-dev-server/ssl/* && rm -rf public/packs/* || lstrue && bin/webpack-dev-server'
+hot: sh -c 'rm -rf /web/node_modules/webpack-dev-server/ssl/* && rm -rf public/packs/* && rm -rf public/packs-test/* && ./startup_prepare.sh || lstrue && bin/webpack-dev-server'
