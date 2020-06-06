@@ -12,7 +12,7 @@ Experiment with Rails, Docker/Docker Machine, local domains, and delayed jobs
 - [x] Run a postgres node for dev/test, but on prod use a hosted instance.
 - [x] Use a local domain - `taco.local` or `taco.test` - to access this Rails app running in (almost) the same env as it would in the cloud.
 - [x] Use docker machine and create a setup of multiple Rails services and DelayedJob workers, which auto restart when they crash.
-- [ ] Basic tests which run with Github Actions and push a build to Docker Hub when successful. Then deploy to the cloud on success.
+- [x] Basic tests which run with Github Actions and push a build to Docker Hub when successful. Then deploy to the cloud on success.
 
 ## goals for later:
 - [ ] (Maybe?) Switch from nginx to Traefik for load balancer/frontend to use it for SSL with Certbot, allowing for DNS challenge and wildcard cert. (Currently, we have to manually specify all domains in the docker-compose file.) ([more about wildcards and Traefik here](https://docs.traefik.io/v1.7/configuration/acme/) and [here](https://docs.traefik.io/v1.7/user-guide/docker-and-lets-encrypt/)) - [Docker](https://hub.docker.com/_/traefik/)
@@ -111,3 +111,8 @@ npm install -g machine-share
 machine-export {machine-name}
 machine-import {machine-name.zip}
 ```
+
+### JS Docs
+
+Docs generated at `/docs` by JSDoc. Here's a guide I followed: https://www.inkoop.io/blog/a-guide-to-js-docs-for-react-js/
+
