@@ -9,6 +9,8 @@
     "@rails/webpacker": "4.2.2",
     "@types/react": "^16.9.32",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
+    "better-docs": "^2.0.1",
+    "jsdoc": "^3.6.4",
     "prop-types": "^15.7.2",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
@@ -29,7 +31,8 @@
     "start": "sh -c 'rm -rf public/packs/* || lstrue && bin/webpack-dev-server'",
     "test": "jest && ./node_modules/.bin/cypress run",
     "cypress:open": "./node_modules/.bin/cypress open",
-    "cypress:run": "./node_modules/.bin/cypress run"
+    "cypress:run": "./node_modules/.bin/cypress run",
+    "docs":"jsdoc -c jsdoc.conf.json"
   },
   "engines": {
     "npm": "^5.8.0"
