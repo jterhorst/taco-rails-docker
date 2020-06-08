@@ -21,10 +21,13 @@
   "devDependencies": {
     "@testing-library/react": "^10.0.4",
     "cypress": "^4.5.0",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.2",
     "eslint": "^7.0.0",
     "eslint-plugin-cypress": "^2.10.3",
     "jest": "^26.0.1",
     "react-hot-loader": "^4.12.19",
+    "react-test-renderer": "^16.13.1",
     "webpack-dev-server": "^3.10.3"
   },
   "scripts": {
@@ -32,7 +35,7 @@
     "test": "jest && ./node_modules/.bin/cypress run",
     "cypress:open": "./node_modules/.bin/cypress open",
     "cypress:run": "./node_modules/.bin/cypress run",
-    "docs":"jsdoc -c jsdoc.conf.json"
+    "builddocs": "jsdoc -c jsdoc.conf.json && yard doc"
   },
   "engines": {
     "npm": "^5.8.0"

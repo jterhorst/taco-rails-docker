@@ -1,8 +1,14 @@
 class TacosController < ApplicationController
   before_action :set_taco, only: [:show, :edit, :update, :destroy]
 
-  # GET /tacos
-  # GET /tacos.json
+  ##
+    # In HTML, returns the UI and component. In JSON, returns a collection of tacos.
+    #
+    # Accessible at `GET /tacos` or `GET /tacos.json`
+    #
+    # --
+    # FIXME: fails if the birthday falls on February 29th
+    #
   def index
     @tacos = Taco.all
 
@@ -13,6 +19,7 @@ class TacosController < ApplicationController
   end
 
   # GET /tacos/1
+  #
   # GET /tacos/1.json
   def show
   end
@@ -24,9 +31,11 @@ class TacosController < ApplicationController
 
   # GET /tacos/1/edit
   def edit
+    
   end
 
   # POST /tacos
+  #
   # POST /tacos.json
   def create
     @taco = Taco.new(taco_params)
@@ -43,6 +52,7 @@ class TacosController < ApplicationController
   end
 
   # PATCH/PUT /tacos/1
+  #
   # PATCH/PUT /tacos/1.json
   def update
     respond_to do |format|
@@ -57,6 +67,7 @@ class TacosController < ApplicationController
   end
 
   # DELETE /tacos/1
+  #
   # DELETE /tacos/1.json
   def destroy
     @taco.destroy
