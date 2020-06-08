@@ -70,7 +70,10 @@ services:
     restart: on-failure
     deploy:
       mode: replicated
-      replicas: 1
+      replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 90s
       restart_policy:
         condition: on-failure
 
