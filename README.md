@@ -116,3 +116,6 @@ machine-import {machine-name.zip}
 
 Docs generated at `/docs` by JSDoc. Here's a guide I followed: https://www.inkoop.io/blog/a-guide-to-js-docs-for-react-js/
 
+### Ruby docs
+
+Still fleshing these out. Started on RDoc Markup with tacos_controller.rb, under guidance written at https://ruby.github.io/rdoc/RDoc/Markup.html

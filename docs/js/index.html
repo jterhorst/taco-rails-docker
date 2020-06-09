@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1>taco-rails-docker</h1>
+<p>Experiment with Rails, Docker/Docker Machine, local domains, and delayed jobs</p>
+<p><img src="https://github.com/jterhorst/taco-rails-docker/workflows/Deploy%20latest%20built%20image/badge.svg?branch=master" alt="Deploy latest built image"></p>
+<p><img src="https://github.com/jterhorst/taco-rails-docker/workflows/Rails%20tests/badge.svg" alt="Rails tests"></p>
+<h3>objectives:</h3>
+<ul>
+<li>[x] Dummy Rails 6 app, with React/webpack running, basic controller and tests</li>
+<li>[x] webpack-dev-server should do hot reloading on docker local.</li>
+<li>[x] Delayed Jobs and cron to create a new daily taco special</li>
+<li>[x] Run a postgres node for dev/test, but on prod use a hosted instance.</li>
+<li>[x] Use a local domain - <code>taco.local</code> or <code>taco.test</code> - to access this Rails app running in (almost) the same env as it would in the cloud.</li>
+<li>[x] Use docker machine and create a setup of multiple Rails services and DelayedJob workers, which auto restart when they crash.</li>
+<li>[x] Basic tests which run with Github Actions and push a build to Docker Hub when successful. Then deploy to the cloud on success.</li>
+</ul>
+<h2>goals for later:</h2>
+<ul>
+<li>[ ] (Maybe?) Switch from nginx to Traefik for load balancer/frontend to use it for SSL with Certbot, allowing for DNS challenge and wildcard cert. (Currently, we have to manually specify all domains in the docker-compose file.) (<a href="https://docs.traefik.io/v1.7/configuration/acme/">more about wildcards and Traefik here</a> and <a href="https://docs.traefik.io/v1.7/user-guide/docker-and-lets-encrypt/">here</a>) - <a href="https://hub.docker.com/_/traefik/">Docker</a></li>
+</ul>
+<h2>Other TODO tasks</h2>
+<ul>
+<li>Clean up these warnings:</li>
+</ul>
+<pre class="prettyprint source"><code>npm WARN npm npm does not support Node.js v10.15.2
+npm WARN npm You should probably upgrade to a newer version of node as we
+npm WARN npm can't make any promises that npm will work with this version.
+npm WARN npm Supported releases of Node.js are the latest release of 4, 6, 7, 8, 9.
+npm WARN npm You can find the latest version at https://nodejs.org/
+npm WARN fsevents@1.2.11 had bundled packages that do not match the required version(s). They have been replaced with non-bundled versions.
+npm WARN react-hot-loader@4.12.20 requires a peer of @types/react@^15.0.0 || ^16.0.0 but none is installed. You must install peer dependencies yourself.
+</code></pre>
+<h2>Local domain</h2>
+<p>In your <code>/etc/hosts</code> file, add the line <code>127.0.0.1   taco.docker</code>
+(If you want a different address, you'll need to update the instructions for mkcert below)</p>
+<h2>Local SSL</h2>
+<p>https://codewithhugo.com/docker-compose-local-https/</p>
+<p><code>brew install mkcert</code>
+then <code>mkcert -install</code>
+(more here https://github.com/FiloSottile/mkcert#installation)</p>
+<p>mkcert taco.docker localhost 127.0.0.1</p>
+<p>cp ./taco.docker.pem ./nginx/certs/taco.docker.crt
+cp ./taco.docker-key.pem ./nginx/certs/taco.docker.key</p>
+<p>For webpack dev server, you might need something to accept the self-signed cert.</p>
+<p>For debugging in Safari, open Keychain and remove existing items for <code>localhost</code> from this project. Then navigate to <code>/node_modules/webpack-dev-server/ssl/</code> and import <code>server.pem</code> into your default keychain (probably login). You must then &quot;Get Info&quot; on this localhost certificate, and set it to &quot;Always Trust&quot;.</p>
+<h2>Webpack-dev-server and SSL locally</h2>
+<p>The webpack-dev-server in development starts itself with a self-signed SSL cert.
+You'll need to direct your browser to that page at <code>https://localhost:3035/</code> and accept the cert manually. Within the container, taco.docker communicates with webpack-dev-server just fine.</p>
+<h2>About webpack-dev-server and docker</h2>
+<p>It's been an impossible task to have the dev server in a separate container and acheive SSL and HMR (hot reloading).
+The compromise was to put them in the same container, and use a script to call Foreman (with processes outlined in Procfile.dev) to launch both the puma (Rails server) and webpack-dev-server (via npm start).</p>
+<h2>Local Docker compose</h2>
+<p>For local environment for development, use Docker Compose on a macOS system with Mojave or later. Linux might work, but untested. Windows is unknown.</p>
+<p>To start dev environemnt...</p>
+<p>Add the file <code>config/master.key</code> into the app project with the contents of the key, and call this:</p>
+<p><code>docker-compose -f docker-compose.development.yml up</code></p>
+<h2>Running tests</h2>
+<p>With the above running compose stack, run...</p>
+<pre class="prettyprint source"><code>docker-compose run -e &quot;RAILS_ENV=test&quot; taco_web rake db:create db:migrate
+docker-compose run -e &quot;RAILS_ENV=test&quot; taco_web rake test
+</code></pre>
+<h2>swarm deploy</h2>
+<p><em>(IMPORTANT: If you don't add the master key with one of the above methods, it will fail to deploy. This is an additional layer to protect secrets in this repo. Do not share the master key, and don't commit the master key in Git or other version control systems.)</em></p>
+<p>source: https://medium.com/softonic-eng/docker-compose-from-development-to-production-88000124a57c</p>
+<p>for image builds to Docker Hub:</p>
+<pre class="prettyprint source"><code>docker-compose -f docker-compose.yml build
+docker-compose -f docker-compose.yml push
+</code></pre>
+<pre class="prettyprint source"><code>env $(cat .env | grep ^[A-Z] | xargs) docker stack deploy --compose-file docker-compose.yml stack-name
+</code></pre>
+<p>(Replace <code>stack-name</code> with the name you wish to use.)</p>
+<h3>Node setup</h3>
+<p>Use <code>docker-machine-node-init.sh</code> locally to create the nodes you need.</p>
+<h3>Export machines</h3>
+<pre class="prettyprint source"><code>npm install -g machine-share
+machine-export {machine-name}
+machine-import {machine-name.zip}
+</code></pre>
+<h3>JS Docs</h3>
+<p>Docs generated at <code>/docs</code> by JSDoc. Here's a guide I followed: https://www.inkoop.io/blog/a-guide-to-js-docs-for-react-js/</p>
+<h3>Ruby docs</h3>
+<p>Still fleshing these out. Started on RDoc Markup with tacos_controller.rb, under guidance written at https://ruby.github.io/rdoc/RDoc/Markup.html</p></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Tacos.html">Tacos</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Mon Jun 08 2020 17:24:09 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
