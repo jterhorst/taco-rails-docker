@@ -82,6 +82,8 @@ docker-compose run -e "RAILS_ENV=test" taco_web rake db:create db:migrate
 docker-compose run -e "RAILS_ENV=test" taco_web rake test
 ```
 
+# Production
+
 ## swarm deploy
 
 _(IMPORTANT: If you don't add the master key with one of the above methods, it will fail to deploy. This is an additional layer to protect secrets in this repo. Do not share the master key, and don't commit the master key in Git or other version control systems.)_
