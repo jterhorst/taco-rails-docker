@@ -20,7 +20,7 @@ services:
   # while it's up and running locally, use these to run tests:
   # docker-compose run -e "RAILS_ENV=test" taco_web rake db:create db:migrate
   # docker-compose run -e "RAILS_ENV=test" taco_web rake test
-
+  
   taco_db:
     image: postgres:9.6
     volumes:
@@ -38,7 +38,7 @@ services:
         failure_action: rollback
         delay: 10s
       restart_policy:
-        condition: failure
+        condition: on-failure
         delay: 5s
         max_attempts: 3
         window: 120s
