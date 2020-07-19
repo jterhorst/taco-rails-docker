@@ -38,7 +38,7 @@ services:
         failure_action: rollback
         delay: 10s
       restart_policy:
-        condition: failure
+        condition: on-failure
         delay: 5s
         max_attempts: 3
         window: 120s
