@@ -14,11 +14,11 @@ services:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
       - POSTGRES_DB
-    healthcheck:
-      test: ["CMD", "pg_isready -U postgres"]
-      interval: 30s
-      timeout: 5s
-      retries: 10
+    # healthcheck:
+    #   test: ["CMD", "pg_isready -U postgres"]
+    #   interval: 90s
+    #   timeout: 30s
+    #   retries: 10
     restart: on-failure
     deploy:
       mode: replicated
@@ -28,18 +28,18 @@ services:
     #     order: start-first
     #     failure_action: rollback
     #     delay: 10s
-    #   restart_policy:
-    #     condition: failure
-    #     delay: 5s
-    #     max_attempts: 3
-    #     window: 120s
-      resources:
-        limits:
-          cpus: '0.30'
-          memory: 256M
-        reservations:
-          cpus: '0.15'
-          memory: 256M
+      restart_policy:
+        condition: failure
+        # delay: 5s
+        # max_attempts: 3
+        # window: 120s
+    #   resources:
+    #     limits:
+    #       cpus: '0.30'
+    #       memory: 256M
+    #     reservations:
+    #       cpus: '0.15'
+    #       memory: 256M
 
   taco_web:
     build:

@@ -32,10 +32,23 @@ services:
       - POSTGRES_MULTIPLE_DATABASES=taco_dev,taco_test,taco_prod
     restart: on-failure
     deploy:
-      mode: replicated
-      replicas: 1
+      update_config:
+        parallelism: 1
+        order: start-first
+        failure_action: rollback
+        delay: 10s
       restart_policy:
-        condition: on-failure
+        condition: failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+        #   resources:
+        #     limits:
+        #       cpus: '0.30'
+        #       memory: 256M
+        #     reservations:
+        #       cpus: '0.15'
+        #       memory: 256M
 
   taco_web:
     build:
