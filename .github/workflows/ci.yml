@@ -29,4 +29,9 @@ jobs:
       if: ${{ failure() }}
       run: |
         docker-compose logs
-
+    - name: Upload Cypress recordings
+      if: ${{ always() }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: cypress-videos
+        path: cypress/videos/
