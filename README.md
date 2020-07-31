@@ -107,6 +107,8 @@ env $(cat .env | grep ^[A-Z] | xargs) docker stack deploy --compose-file docker-
 
 Use `docker-machine-node-init.sh` locally to create the nodes you need.
 
+After nodes are created, log in and copy contents of .env and master.key to each node. DO NOT COMMIT THOSE FILES.
+
 ### Export machines
 
 ```
@@ -114,6 +116,8 @@ npm install -g machine-share
 machine-export {machine-name}
 machine-import {machine-name.zip}
 ```
+
+You'll need to copy the id_rsa and id_rsa.pub from that machine zip file to Github secrets in order to deploy. The secrets key names are in the deploy.yml file.
 
 ### JS Docs
 
