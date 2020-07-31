@@ -110,6 +110,9 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    environment:
+      - DEFAULT_HOST=taco.docker
+      - ENABLE_IPV6=true
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - ./nginx/certs:/etc/nginx/certs
