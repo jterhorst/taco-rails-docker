@@ -113,7 +113,6 @@ Log in to each node and enable ipv6: https://www.digitalocean.com/docs/networkin
 https://medium.com/@skleeschulte/how-to-enable-ipv6-for-docker-containers-on-ubuntu-18-04-c68394a219a2
 
 ### Export machines
-
 ```
 npm install -g machine-share
 machine-export {machine-name}
