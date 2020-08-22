@@ -21,7 +21,7 @@ do
     docker-machine ssh $NODE_PREFIX-$i chmod 644 /root/.ssh/id_rsa.pub
     docker-machine ssh $NODE_PREFIX-$i chmod 600 /root/.ssh/id_rsa
         
-    docker-machine ssh $NODE_PREFIX-$i git clone git@github.com:jterhorst/taco-rails-docker.git taco-rails-docker
+    docker-machine ssh $NODE_PREFIX-$i git clone git@github.com:jterhorst/taco-rails-docker.git -b replicas taco-rails-docker
 
     docker-machine scp .env $NODE_PREFIX-$i:/root/taco-rails-docker/.env
 
