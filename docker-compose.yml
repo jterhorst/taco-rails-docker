@@ -49,9 +49,9 @@ services:
     volumes:
       - ./:/web
     environment:
-      - VIRTUAL_HOST=supertaco.dev
+      - VIRTUAL_HOST=www.supertaco.dev,supertaco.dev
       - VIRTUAL_PORT=8080
-      - LETSENCRYPT_HOST=supertaco.dev
+      - LETSENCRYPT_HOST=www.supertaco.dev,supertaco.dev
       - POSTGRES_HOST
       - POSTGRES_DB
       - POSTGRES_USER
