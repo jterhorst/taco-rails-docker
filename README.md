@@ -109,8 +109,10 @@ Use `docker-machine-node-init.sh` locally to create the nodes you need.
 
 After nodes are created, log in and copy contents of .env and master.key to each node. DO NOT COMMIT THOSE FILES.
 
-### Export machines
+Log in to each node and enable ipv6: https://www.digitalocean.com/docs/networking/ipv6/how-to/enable/
+https://medium.com/@skleeschulte/how-to-enable-ipv6-for-docker-containers-on-ubuntu-18-04-c68394a219a2
 
+### Export machines
 ```
 npm install -g machine-share
 machine-export {machine-name}

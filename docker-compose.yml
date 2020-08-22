@@ -49,9 +49,9 @@ services:
     volumes:
       - ./:/web
     environment:
-      - VIRTUAL_HOST=supertaco.dev
+      - VIRTUAL_HOST=www.supertaco.dev,supertaco.dev
       - VIRTUAL_PORT=8080
-      - LETSENCRYPT_HOST=supertaco.dev
+      - LETSENCRYPT_HOST=www.supertaco.dev,supertaco.dev
       - POSTGRES_HOST
       - POSTGRES_DB
       - POSTGRES_USER
@@ -166,7 +166,6 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
     environment:
       - DEFAULT_HOST=supertaco.dev
-      - ENABLE_IPV6=true
     labels:
       - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy
     ports:
